@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --up-primary: #1e293b;      /* Deep Slate */
+  --up-accent: #059669;       /* Value Green */
+  --up-confidence: #fcd34d;   /* Soft Amber */
+  --up-background: #f8fafc;   /* Off-White */
+  --up-card: #ffffff;
+  --up-border: #e2e8f0;       /* Slate 200 */
+  --up-text-primary: #0f172a; /* Slate 900 */
+  --up-text-secondary: #64748b; /* Slate 500 */
+}
+
+@theme inline {
+  --color-up-primary: var(--up-primary);
+  --color-up-accent: var(--up-accent);
+  --color-up-confidence: var(--up-confidence);
+  --color-up-background: var(--up-background);
+  --color-up-card: var(--up-card);
+  --color-up-border: var(--up-border);
+  --color-up-text-primary: var(--up-text-primary);
+  --color-up-text-secondary: var(--up-text-secondary);
+
+  --font-display: var(--font-manrope);
+  --font-body: var(--font-inter);
+  --font-data: var(--font-jetbrains-mono);
+}
+
+body {
+  background: var(--up-background);
+  color: var(--up-text-primary);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-data {
+  font-family: var(--font-data), ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Tap targets: 48px minimum throughout, per DESIGN.md Section 4 */
+button, a[role="button"], input, select {
+  min-height: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

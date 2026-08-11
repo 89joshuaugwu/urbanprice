@@ -1,0 +1,205 @@
+{
+  "trainedAt": "2026-08-10",
+  "datasetSource": "SYNTHETIC placeholder modeled on Ames Housing (Kaggle) \u2014 see training/generate_synthetic_ames.py docstring. Replace before using real figures in a defense.",
+  "sampleCount": 1460,
+  "trainTestSplit": {
+    "train": 1168,
+    "test": 292
+  },
+  "metrics": {
+    "randomForest": {
+      "rmse": 44393.43008706237,
+      "mae": 36775.53968884038,
+      "r2": 0.6745850637145662
+    },
+    "gradientBoosting": {
+      "rmse": 33663.12597756873,
+      "mae": 26648.319085745945,
+      "r2": 0.8128848453858564
+    }
+  },
+  "featureImportances": {
+    "OverallQual": 0.4354545336740255,
+    "Neighborhood": 0.21172046928019514,
+    "GrLivArea": 0.1548718591587355,
+    "1stFlrSF": 0.04743358390179208,
+    "TotalBsmtSF": 0.040376874267071865,
+    "YearBuilt": 0.026648146593807064,
+    "GarageArea": 0.023308388833997308,
+    "LotArea": 0.021888067843083153,
+    "YearRemodAdd": 0.012103680007174206,
+    "TotRmsAbvGrd": 0.011656407671575782,
+    "Fireplaces": 0.0064664376043245,
+    "FullBath": 0.004531145957731537,
+    "GarageCars": 0.0035404052064862425
+  },
+  "topUiFeatures": [
+    "OverallQual",
+    "Neighborhood",
+    "GrLivArea",
+    "1stFlrSF",
+    "TotalBsmtSF",
+    "YearBuilt",
+    "GarageArea",
+    "LotArea",
+    "YearRemodAdd",
+    "TotRmsAbvGrd",
+    "Fireplaces",
+    "FullBath"
+  ],
+  "featureMedians": {
+    "OverallQual": 6.0,
+    "GrLivArea": 1529.0,
+    "GarageCars": 2.0,
+    "TotalBsmtSF": 1036.0,
+    "YearBuilt": 1938.0,
+    "YearRemodAdd": 1959.0,
+    "FullBath": 2.0,
+    "LotArea": 8833.5,
+    "1stFlrSF": 1005.0,
+    "TotRmsAbvGrd": 6.0,
+    "GarageArea": 507.5,
+    "Fireplaces": 0.0,
+    "Neighborhood_Blmngtn": 0.0,
+    "Neighborhood_Blueste": 0.0,
+    "Neighborhood_BrDale": 0.0,
+    "Neighborhood_BrkSide": 0.0,
+    "Neighborhood_ClearCr": 0.0,
+    "Neighborhood_CollgCr": 0.0,
+    "Neighborhood_Crawfor": 0.0,
+    "Neighborhood_Edwards": 0.0,
+    "Neighborhood_Gilbert": 0.0,
+    "Neighborhood_IDOTRR": 0.0,
+    "Neighborhood_MeadowV": 0.0,
+    "Neighborhood_Mitchel": 0.0,
+    "Neighborhood_NAmes": 0.0,
+    "Neighborhood_NPkVill": 0.0,
+    "Neighborhood_NWAmes": 0.0,
+    "Neighborhood_NoRidge": 0.0,
+    "Neighborhood_NridgHt": 0.0,
+    "Neighborhood_OldTown": 0.0,
+    "Neighborhood_SWISU": 0.0,
+    "Neighborhood_Sawyer": 0.0,
+    "Neighborhood_SawyerW": 0.0,
+    "Neighborhood_Somerst": 0.0,
+    "Neighborhood_StoneBr": 0.0,
+    "Neighborhood_Timber": 0.0,
+    "Neighborhood_Veenker": 0.0
+  },
+  "uiRanges": {
+    "OverallQual": {
+      "min": 1.0,
+      "max": 10.0
+    },
+    "GrLivArea": {
+      "min": 334.0,
+      "max": 3136.0
+    },
+    "GarageCars": {
+      "min": 0.0,
+      "max": 4.0
+    },
+    "TotalBsmtSF": {
+      "min": 0.0,
+      "max": 2570.0
+    },
+    "YearBuilt": {
+      "min": 1872.0,
+      "max": 2010.0
+    },
+    "YearRemodAdd": {
+      "min": 1950.0,
+      "max": 2010.0
+    },
+    "FullBath": {
+      "min": 0.0,
+      "max": 3.0
+    },
+    "LotArea": {
+      "min": 1300.0,
+      "max": 42206.0
+    },
+    "1stFlrSF": {
+      "min": 334.0,
+      "max": 2613.0
+    },
+    "TotRmsAbvGrd": {
+      "min": 2.0,
+      "max": 13.0
+    },
+    "GarageArea": {
+      "min": 0.0,
+      "max": 1418.0
+    },
+    "Fireplaces": {
+      "min": 0.0,
+      "max": 3.0
+    }
+  },
+  "neighborhoods": [
+    "Blmngtn",
+    "Blueste",
+    "BrDale",
+    "BrkSide",
+    "ClearCr",
+    "CollgCr",
+    "Crawfor",
+    "Edwards",
+    "Gilbert",
+    "IDOTRR",
+    "MeadowV",
+    "Mitchel",
+    "NAmes",
+    "NPkVill",
+    "NWAmes",
+    "NoRidge",
+    "NridgHt",
+    "OldTown",
+    "SWISU",
+    "Sawyer",
+    "SawyerW",
+    "Somerst",
+    "StoneBr",
+    "Timber",
+    "Veenker"
+  ],
+  "featureNames": [
+    "OverallQual",
+    "GrLivArea",
+    "GarageCars",
+    "TotalBsmtSF",
+    "YearBuilt",
+    "YearRemodAdd",
+    "FullBath",
+    "LotArea",
+    "1stFlrSF",
+    "TotRmsAbvGrd",
+    "GarageArea",
+    "Fireplaces",
+    "Neighborhood_Blmngtn",
+    "Neighborhood_Blueste",
+    "Neighborhood_BrDale",
+    "Neighborhood_BrkSide",
+    "Neighborhood_ClearCr",
+    "Neighborhood_CollgCr",
+    "Neighborhood_Crawfor",
+    "Neighborhood_Edwards",
+    "Neighborhood_Gilbert",
+    "Neighborhood_IDOTRR",
+    "Neighborhood_MeadowV",
+    "Neighborhood_Mitchel",
+    "Neighborhood_NAmes",
+    "Neighborhood_NPkVill",
+    "Neighborhood_NWAmes",
+    "Neighborhood_NoRidge",
+    "Neighborhood_NridgHt",
+    "Neighborhood_OldTown",
+    "Neighborhood_SWISU",
+    "Neighborhood_Sawyer",
+    "Neighborhood_SawyerW",
+    "Neighborhood_Somerst",
+    "Neighborhood_StoneBr",
+    "Neighborhood_Timber",
+    "Neighborhood_Veenker"
+  ]
+}

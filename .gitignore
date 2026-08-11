@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Environment & secret files
+.env
+.env.*
+!.env.example
+
+# Next.js & Build outputs
+.next/
+out/
+build/
+dist/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
