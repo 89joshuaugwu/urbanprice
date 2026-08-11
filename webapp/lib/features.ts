@@ -1,7 +1,9 @@
-// Expands the reduced ValuationForm inputs (top ~12 features, per
-// CONTEXT.md Section 4) into the full ordered feature vector the trained
-// model expects — every feature NOT on the form is filled with the
-// dataset median (or, for Neighborhood, one-hot 0s except the selection).
+// Expands the ValuationForm inputs into the full ordered feature vector
+// the trained model expects. Every source feature on this dataset is
+// exposed on the form (there's nothing left over to backfill with
+// medians, unlike the earlier Ames-based version of this app) — but the
+// median fallback stays in place for robustness if the model is retrained
+// with extra features later.
 import type { ModelMetadata } from "@/types/model";
 import type { ValuationFormValues } from "@/types/valuation";
 
@@ -9,10 +11,13 @@ export function buildFeatureVector(
   metadata: ModelMetadata,
   values: ValuationFormValues
 ): number[] {
+  const categoricalPrefixes = Object.keys(metadata.categoricalFeatures ?? {});
+
   return metadata.featureNames.map((name) => {
-    if (name.startsWith("Neighborhood_")) {
-      const selected = values["Neighborhood"];
-      return selected && name === `Neighborhood_${selected}` ? 1 : 0;
+    const matchedPrefix = categoricalPrefixes.find((p) => name.startsWith(`${p}_`));
+    if (matchedPrefix) {
+      const selected = values[matchedPrefix];
+      return selected && name === `${matchedPrefix}_${selected}` ? 1 : 0;
     }
     const v = values[name];
     if (typeof v === "number" && !Number.isNaN(v)) return v;
@@ -20,71 +25,33 @@ export function buildFeatureVector(
   });
 }
 
-// Human-readable labels + helper text for the top UI features. Falls back
-// to the raw feature name for anything not listed here (keeps the UI
-// working even if a retrain changes the top-feature list).
+// Human-readable labels + helper text for the Nigeria feature set.
 export const FEATURE_LABELS: Record<
   string,
   { label: string; help: string; unit?: string }
 > = {
-  OverallQual: {
-    label: "Overall Quality",
-    help: "Overall material and finish quality, 1 (poor) to 10 (excellent).",
+  Bedrooms: {
+    label: "Bedrooms",
+    help: "Number of bedrooms.",
   },
-  GrLivArea: {
-    label: "Living Area",
-    help: "Above-ground living area.",
-    unit: "sq ft",
+  Bathrooms: {
+    label: "Bathrooms",
+    help: "Number of bathrooms.",
   },
-  GarageCars: {
-    label: "Garage Capacity",
-    help: "Size of garage in car capacity.",
-    unit: "cars",
+  Toilets: {
+    label: "Toilets",
+    help: "Number of toilets (may exceed bathrooms in Nigerian listings).",
   },
-  GarageArea: {
-    label: "Garage Area",
-    help: "Size of garage.",
-    unit: "sq ft",
+  ParkingSpace: {
+    label: "Parking Spaces",
+    help: "Number of dedicated parking spaces.",
   },
-  TotalBsmtSF: {
-    label: "Total Basement Area",
-    help: "Total square feet of basement area.",
-    unit: "sq ft",
+  State: {
+    label: "State",
+    help: "Nigerian state the property is located in.",
   },
-  YearBuilt: {
-    label: "Year Built",
-    help: "Original construction year.",
-  },
-  YearRemodAdd: {
-    label: "Year Remodeled",
-    help: "Remodel year (same as YearBuilt if no remodel).",
-  },
-  FullBath: {
-    label: "Full Bathrooms",
-    help: "Full bathrooms above grade.",
-    unit: "baths",
-  },
-  Neighborhood: {
-    label: "Neighborhood",
-    help: "Physical location within the city.",
-  },
-  LotArea: {
-    label: "Lot Area",
-    help: "Lot size.",
-    unit: "sq ft",
-  },
-  "1stFlrSF": {
-    label: "First Floor Area",
-    help: "First floor square feet.",
-    unit: "sq ft",
-  },
-  TotRmsAbvGrd: {
-    label: "Total Rooms",
-    help: "Total rooms above grade (does not include bathrooms).",
-    unit: "rooms",
-  },
-  Fireplaces: {
-    label: "Fireplaces",
-    help: "Number of fireplaces.",
+  PropertyType: {
+    label: "Property Type",
+    help: "The building type — duplex, bungalow, flat, etc.",
   },
 };

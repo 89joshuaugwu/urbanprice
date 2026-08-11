@@ -22,10 +22,10 @@ export interface ValuationResultData {
 
 export interface ComparableProperty {
   id: string;
-  neighborhood: string;
-  overallQual: number;
-  grLivArea: number;
-  yearBuilt: number;
+  neighborhood: string; // Nigerian State
+  propertyType: string;
+  bedrooms: number;
+  bathrooms: number;
   salePrice: number;
 }
 

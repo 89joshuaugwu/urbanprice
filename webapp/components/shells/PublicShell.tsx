@@ -77,7 +77,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
           </div>
           <p className="mt-2 max-w-2xl">
             An automated valuation model built on ensembled regression trees, trained and
-            validated against an established housing benchmark dataset. See{" "}
+            validated on real Nigerian property listings across 25 states. See{" "}
             <Link href="/methodology" className="underline hover:text-up-primary">
               Methodology
             </Link>{" "}

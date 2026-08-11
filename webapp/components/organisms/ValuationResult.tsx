@@ -24,10 +24,11 @@ export function ValuationResult({ result, loggedIn, onReset }: ValuationResultPr
   const [comparables, setComparables] = useState<ComparableProperty[]>([]);
 
   useEffect(() => {
-    const overallQual = Number(result.inputFeatures["OverallQual"]) || 5;
-    const grLivArea = Number(result.inputFeatures["GrLivArea"]) || 1500;
-    const yearBuilt = Number(result.inputFeatures["YearBuilt"]) || 1990;
-    findComparables({ overallQual, grLivArea, yearBuilt }).then(setComparables);
+    const bedrooms = Number(result.inputFeatures["Bedrooms"]) || 4;
+    const bathrooms = Number(result.inputFeatures["Bathrooms"]) || 4;
+    const state = String(result.inputFeatures["State"] ?? "");
+    const propertyType = String(result.inputFeatures["PropertyType"] ?? "");
+    findComparables({ bedrooms, bathrooms, state, propertyType }).then(setComparables);
   }, [result.inputFeatures]);
 
   return (

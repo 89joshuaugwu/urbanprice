@@ -11,8 +11,8 @@ export default function LandingPage() {
           Know what it&apos;s worth.
         </h1>
         <p className="max-w-xl text-lg text-up-text-secondary">
-          An automated valuation model for urban housing units, built on ensembled
-          regression trees and trained against an established housing benchmark dataset.
+          An automated valuation model for Nigerian housing units, built on ensembled
+          regression trees and trained on real property listings across 25 states.
         </p>
         <Link
           href="/valuate"

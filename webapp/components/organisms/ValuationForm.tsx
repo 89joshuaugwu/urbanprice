@@ -15,8 +15,10 @@ interface ValuationFormProps {
 function defaultValues(metadata: ModelMetadata): ValuationFormValues {
   const values: ValuationFormValues = {};
   for (const name of metadata.topUiFeatures) {
-    if (name === "Neighborhood") {
+    if (name === "State") {
       values[name] = metadata.neighborhoods[0];
+    } else if (name === "PropertyType") {
+      values[name] = metadata.propertyTypes[0];
     } else {
       values[name] = metadata.featureMedians[name] ?? metadata.uiRanges[name]?.min ?? 0;
     }

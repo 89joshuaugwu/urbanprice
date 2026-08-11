@@ -38,8 +38,12 @@ export interface ModelMetadata {
   topUiFeatures: string[];
   featureMedians: Record<string, number>;
   uiRanges: Record<string, { min: number; max: number }>;
-  neighborhoods: string[];
+  neighborhoods: string[]; // Nigerian States — kept as "neighborhoods" for schema stability
+  propertyTypes: string[];
+  currency: string; // e.g. "NGN"
+  targetTransform: "identity" | "log1p";
   featureNames: string[];
+  categoricalFeatures: Record<string, string>; // e.g. { State: "State", PropertyType: "PropertyType" }
 }
 
 export interface VerificationSample {

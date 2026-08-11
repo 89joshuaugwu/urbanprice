@@ -1,8 +1,7 @@
 "use client";
 
 // Nearest-neighbor "similar properties" lookup against a bundled sample
-// of training-data rows (per PROMPT.md Phase 3: "keep this simple, it's
-// a trust-building UI element, not a core algorithm").
+// of training-data rows.
 import type { ComparableProperty } from "@/types/valuation";
 
 let cache: ComparableProperty[] | null = null;
@@ -14,19 +13,19 @@ async function loadComparables(): Promise<ComparableProperty[]> {
   return cache;
 }
 
-function normalizedDistance(a: ComparableProperty, target: {
-  overallQual: number;
-  grLivArea: number;
-  yearBuilt: number;
-}): number {
-  const qualDiff = (a.overallQual - target.overallQual) / 10;
-  const areaDiff = (a.grLivArea - target.grLivArea) / 3000;
-  const yearDiff = (a.yearBuilt - target.yearBuilt) / 140;
-  return Math.sqrt(qualDiff ** 2 + areaDiff ** 2 + yearDiff ** 2);
+function normalizedDistance(
+  a: ComparableProperty,
+  target: { bedrooms: number; bathrooms: number; state: string; propertyType: string }
+): number {
+  const bedDiff = (a.bedrooms - target.bedrooms) / 9;
+  const bathDiff = (a.bathrooms - target.bathrooms) / 9;
+  const stateMatch = a.neighborhood === target.state ? 0 : 0.3;
+  const typeMatch = a.propertyType === target.propertyType ? 0 : 0.15;
+  return Math.sqrt(bedDiff ** 2 + bathDiff ** 2) + stateMatch + typeMatch;
 }
 
 export async function findComparables(
-  target: { overallQual: number; grLivArea: number; yearBuilt: number },
+  target: { bedrooms: number; bathrooms: number; state: string; propertyType: string },
   count = 4
 ): Promise<ComparableProperty[]> {
   const all = await loadComparables();

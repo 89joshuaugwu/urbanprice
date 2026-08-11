@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/Card";
-import { formatCurrency, formatNumber } from "@/lib/format";
+import { formatCurrency } from "@/lib/format";
 import type { ComparableProperty } from "@/types/valuation";
 
 export function ComparablePropertyCard({ property }: { property: ComparableProperty }) {
@@ -10,9 +10,8 @@ export function ComparablePropertyCard({ property }: { property: ComparablePrope
         {formatCurrency(property.salePrice)}
       </p>
       <ul className="mt-3 space-y-1 text-xs text-up-text-secondary">
-        <li>Quality: {property.overallQual}/10</li>
-        <li>{formatNumber(property.grLivArea)} sq ft living area</li>
-        <li>Built {property.yearBuilt}</li>
+        <li>{property.propertyType}</li>
+        <li>{property.bedrooms} bed · {property.bathrooms} bath</li>
       </ul>
     </Card>
   );

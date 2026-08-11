@@ -1,116 +1,96 @@
 # UrbanPrice — Sample Test Cases
 
-Use these to sanity-check the app after setup, after redeploying, or
-after retraining with the real dataset. Numbers below were produced by
-the **currently bundled synthetic-placeholder model** (see
-`webapp/README.md` Section 2) — re-run this same check after you swap in
-the real Ames Housing model and expect different (but plausible) numbers.
+Use these to sanity-check the app after setup or after redeploying.
+Numbers below were produced by the model currently bundled in
+`webapp/public/model/` — real data from 24,195 Nigerian property listings
+across 25 states (see `webapp/README.md` §2 for the full disclosure,
+including the listing-price-vs-sold-price caveat).
 
-Valid input ranges for the model currently bundled (from
-`training/model_metadata.json` → `uiRanges`):
+Valid input ranges (from `training/model_metadata.json` → `uiRanges`):
 
 | Feature | Min | Max |
 |---|---|---|
-| Overall Quality | 1 | 10 |
-| Living Area (sq ft) | 334 | 3,136 |
-| First Floor Area (sq ft) | 334 | 2,613 |
-| Total Basement Area (sq ft) | 0 | 2,570 |
-| Year Built | 1872 | 2010 |
-| Year Remodeled | 1950 | 2010 |
-| Garage Area (sq ft) | 0 | 1,418 |
-| Lot Area (sq ft) | 1,300 | 42,206 |
-| Total Rooms | 2 | 13 |
-| Fireplaces | 0 | 3 |
-| Full Bathrooms | 0 | 3 |
+| Bedrooms | 1 | 9 |
+| Bathrooms | 1 | 9 |
+| Toilets | 1 | 9 |
+| Parking Spaces | 1 | 9 |
+| State | 25 Nigerian states | |
+| Property Type | Detached Duplex, Terraced Duplexes, Semi Detached Duplex, Detached Bungalow, Block of Flats, Semi Detached Bungalow, Terraced Bungalow | |
 
 ---
 
-## Case 1 — Modest starter home
+## Case 1 — Standard duplex, Lagos
 
 | Field | Value |
 |---|---|
-| Overall Quality | 4 |
-| Neighborhood | OldTown |
-| Living Area | 900 sq ft |
-| First Floor Area | 900 sq ft |
-| Total Basement Area | 700 sq ft |
-| Year Built | 1940 |
-| Year Remodeled | 1950 |
-| Garage Area | 200 sq ft |
-| Lot Area | 6,000 sq ft |
-| Total Rooms | 5 |
-| Fireplaces | 0 |
-| Full Bathrooms | 1 |
+| Bedrooms | 4 |
+| Bathrooms | 5 |
+| Toilets | 5 |
+| Parking Spaces | 4 |
+| State | Lagos |
+| Property Type | Detached Duplex |
 
-**Expected output:** Random Forest ≈ **$248,300**, likely range
-**$209,200 – $287,400**. Gradient Boosting ≈ **$248,500** (the two models
-should land close together here — this is a "typical" profile near the
-center of the training distribution).
+**Expected output:** Random Forest ≈ **₦101,000,000**, likely range
+**₦97,600,000 – ₦104,400,000**. Gradient Boosting ≈ **₦116,700,000**. This
+is the most "typical" profile in the dataset (median bedroom/bathroom
+counts, most common property type, largest state by listing volume) —
+the two models should land reasonably close together here.
 
-## Case 2 — Mid-range family home
+## Case 2 — Large duplex, Abuja
 
 | Field | Value |
 |---|---|
-| Overall Quality | 6 |
-| Neighborhood | CollgCr |
-| Living Area | 1,600 sq ft |
-| First Floor Area | 1,000 sq ft |
-| Total Basement Area | 1,000 sq ft |
-| Year Built | 1995 |
-| Year Remodeled | 1998 |
-| Garage Area | 480 sq ft |
-| Lot Area | 9,500 sq ft |
-| Total Rooms | 7 |
-| Fireplaces | 1 |
-| Full Bathrooms | 2 |
+| Bedrooms | 6 |
+| Bathrooms | 6 |
+| Toilets | 7 |
+| Parking Spaces | 6 |
+| State | Abuja |
+| Property Type | Detached Duplex |
 
-**Expected output:** Random Forest ≈ **$330,900**, likely range
-**$306,800 – $354,900**. Gradient Boosting ≈ **$295,600**. The two
-models diverging more here than in Case 1 is a good methodology
-talking point — worth showing on the Methodology page's comparison.
+**Expected output:** Random Forest ≈ **₦319,000,000**, likely range
+**₦187,000,000 – ₦451,000,000** (wide — few 6-bedroom listings in the
+training data means less agreement across the ensemble's individual
+trees, which the confidence range correctly surfaces). Gradient Boosting
+≈ **₦417,000,000**.
 
-## Case 3 — High-end new build
+## Case 3 — Modest bungalow, Ogun State (edge case, worth discussing in a defense)
 
 | Field | Value |
 |---|---|
-| Overall Quality | 9 |
-| Neighborhood | NridgHt |
-| Living Area | 2,800 sq ft |
-| First Floor Area | 1,600 sq ft |
-| Total Basement Area | 1,900 sq ft |
-| Year Built | 2008 |
-| Year Remodeled | 2008 |
-| Garage Area | 850 sq ft |
-| Lot Area | 15,000 sq ft |
-| Total Rooms | 10 |
-| Fireplaces | 2 |
-| Full Bathrooms | 3 |
+| Bedrooms | 3 |
+| Bathrooms | 3 |
+| Toilets | 4 |
+| Parking Spaces | 2 |
+| State | Ogun |
+| Property Type | Detached Bungalow |
 
-**Expected output:** Random Forest ≈ **$487,000**, likely range
-**$414,800 – $559,300**. Gradient Boosting ≈ **$506,300**. Note the wider
-confidence band here — fewer high-end training rows means more spread
-across the ensemble's individual trees, which is exactly what the
-confidence range is supposed to surface.
+**Expected output:** Random Forest ≈ **₦14,900,000**. Gradient Boosting ≈
+**₦3,600,000** — a large disagreement between the two models. This isn't
+a bug: 3-bedroom detached bungalows in Ogun State are a thin slice of
+the training data, so Gradient Boosting's sequential, sharply-cutting
+trees extrapolate poorly here while Random Forest's averaging smooths it
+out. **This is genuinely useful methodology material** — it's a concrete,
+honest demonstration of why comparing two model families (rather than
+shipping one black-box number) has value, and why the confidence range
+matters more on some inputs than others.
 
 ---
 
 ## Edge cases worth testing manually
 
-- **Minimum everything** (Quality 1, smallest area/lot/year 1872, 0
-  garage/fireplaces/baths) — confirm the form doesn't error and the
-  estimate stays positive and low.
-- **Maximum everything** — confirm no overflow/NaN and the estimate is
-  the highest in the app.
-- **Switching Neighborhood only, holding everything else fixed** — the
-  estimate should shift by a plausible amount, demonstrating the
-  neighborhood one-hot encoding is wired correctly.
-- **`prefers-reduced-motion` enabled** (OS accessibility setting) — the
-  EnsembleReveal animation should be skipped entirely; the estimate and
-  confidence band should appear instantly via fade-in.
+- **Minimum everything** (1 bed/bath/toilet/parking) — confirm the form
+  doesn't error and the estimate stays positive and low.
+- **Maximum everything** (9s across the board) — confirm no overflow/NaN.
+- **Switching State only, holding everything else fixed** — the estimate
+  should shift by a plausible amount (Lagos and Abuja listings skew
+  higher than most other states in this data).
+- **`prefers-reduced-motion` enabled** — the EnsembleReveal animation
+  should be skipped entirely; the estimate and confidence band should
+  appear instantly via fade-in.
 
 ## Automated correctness check
 
-Don't hand-verify the math above by re-deriving it — run:
+Don't hand-verify the math above — run:
 
 ```bash
 cd webapp
@@ -119,6 +99,6 @@ npm run verify
 
 This replays 5 real rows from the Python test set through the exact
 TypeScript inference engine the app uses and confirms the numbers match
-Python's own `.predict()` output to the cent. This is the check to run
-(and screenshot/log for your defense) any time you retrain or touch
-`lib/inference.ts`.
+Python's own `.predict()` output to the cent (or kobo). Run this any time
+you retrain or touch `lib/inference.ts`, and keep the PASSED output
+handy for your defense.

@@ -24,7 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "UrbanPrice — Know what it's worth.",
   description:
-    "An automated valuation model (AVM) for urban housing units, built on ensembled regression trees (Random Forest + Gradient Boosting).",
+    "An automated valuation model (AVM) for Nigerian housing units, built on ensembled regression trees (Random Forest + Gradient Boosting) trained on real property listings.",
   icons: {
     icon: [
       { url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" },

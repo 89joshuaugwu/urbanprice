@@ -34,18 +34,21 @@ export default function MethodologyPage() {
           Dataset disclosure
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-up-text-primary">
-          This model is trained and validated on the Ames Housing dataset (Iowa, USA) as
-          a methodology benchmark. Production deployment for a specific local market
-          would require locally-sourced transaction data.
+          This model is trained on {metadata ? metadata.sampleCount.toLocaleString() : "24,000+"}{" "}
+          real Nigerian property listings spanning {metadata?.neighborhoods.length ?? 25}{" "}
+          states — bedrooms, bathrooms, toilets, parking spaces, property type, and
+          asking price. It is intentionally not a generic international benchmark
+          dataset; every prediction below reflects the Nigerian housing market it was
+          trained on.
         </p>
-        {metadata?.datasetSource.startsWith("SYNTHETIC") && (
-          <p className="mt-3 text-sm leading-relaxed text-red-700">
-            Note: the model currently shipped with this build was trained on a{" "}
-            <strong>synthetic placeholder dataset</strong> shaped after Ames Housing, not
-            the real Kaggle data — see README.md &quot;Replacing the placeholder
-            model&quot; before using these numbers in a defense.
-          </p>
-        )}
+        <p className="mt-3 text-sm leading-relaxed text-up-text-primary">
+          <strong>Important limitation:</strong> this dataset captures listing (asking)
+          prices scraped from property portals, not verified completed-sale records —
+          asking prices can run higher than what a property actually sells for. It also
+          has no square footage, exact location, or condition data, which limits how
+          precise a single estimate can be; that&apos;s reflected honestly in the R² and
+          confidence range below rather than hidden.
+        </p>
       </div>
     </div>
   );

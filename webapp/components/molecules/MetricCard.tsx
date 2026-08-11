@@ -8,11 +8,11 @@ export function MetricCard({ title, metrics }: { title: string; metrics: ModelMe
       <dl className="mt-4 space-y-3">
         <div className="flex items-center justify-between">
           <dt className="text-sm text-up-text-secondary">RMSE</dt>
-          <dd className="font-data text-sm font-medium">${Math.round(metrics.rmse).toLocaleString()}</dd>
+          <dd className="font-data text-sm font-medium">₦{Math.round(metrics.rmse).toLocaleString()}</dd>
         </div>
         <div className="flex items-center justify-between">
           <dt className="text-sm text-up-text-secondary">MAE</dt>
-          <dd className="font-data text-sm font-medium">${Math.round(metrics.mae).toLocaleString()}</dd>
+          <dd className="font-data text-sm font-medium">₦{Math.round(metrics.mae).toLocaleString()}</dd>
         </div>
         <div className="flex items-center justify-between">
           <dt className="text-sm text-up-text-secondary">R²</dt>

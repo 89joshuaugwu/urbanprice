@@ -6,16 +6,6 @@ import { FEATURE_LABELS } from "@/lib/features";
 import { formatNumber } from "@/lib/format";
 import type { ModelMetadata } from "@/types/model";
 
-const INTEGER_STEP_1 = new Set([
-  "OverallQual",
-  "FullBath",
-  "Fireplaces",
-  "TotRmsAbvGrd",
-  "GarageCars",
-  "YearBuilt",
-  "YearRemodAdd",
-]);
-
 interface FeatureInputProps {
   name: string;
   value: number | string;
@@ -26,7 +16,7 @@ interface FeatureInputProps {
 export function FeatureInput({ name, value, metadata, onChange }: FeatureInputProps) {
   const meta = FEATURE_LABELS[name] ?? { label: name, help: "" };
 
-  if (name === "Neighborhood") {
+  if (name === "State") {
     return (
       <div>
         <Select
@@ -41,10 +31,25 @@ export function FeatureInput({ name, value, metadata, onChange }: FeatureInputPr
     );
   }
 
+  if (name === "PropertyType") {
+    return (
+      <div>
+        <Select
+          id={`feature-${name}`}
+          label={meta.label}
+          value={String(value)}
+          onChange={(e) => onChange(name, e.target.value)}
+          options={metadata.propertyTypes.map((n) => ({ value: n, label: n }))}
+        />
+        <p className="mt-1 text-xs text-up-text-secondary">{meta.help}</p>
+      </div>
+    );
+  }
+
   const range = metadata.uiRanges[name];
   const min = range?.min ?? 0;
-  const max = range?.max ?? 100;
-  const step = INTEGER_STEP_1.has(name) ? 1 : Math.max(1, Math.round((max - min) / 100));
+  const max = range?.max ?? 10;
+  const step = 1; // Bedrooms/Bathrooms/Toilets/ParkingSpace are all whole numbers
   const numericValue = typeof value === "number" ? value : Number(value) || min;
 
   return (
