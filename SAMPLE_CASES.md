@@ -3,8 +3,8 @@
 Use these to sanity-check the app after setup or after redeploying.
 Numbers below were produced by the model currently bundled in
 `webapp/public/model/` — real data from 24,195 Nigerian property listings
-across 25 states (see `webapp/README.md` §2 for the full disclosure,
-including the listing-price-vs-sold-price caveat).
+across 25 states, with a monotonic constraint on Random Forest (see
+`webapp/README.md` §2 for the full disclosure).
 
 Valid input ranges (from `training/model_metadata.json` → `uiRanges`):
 
@@ -30,11 +30,8 @@ Valid input ranges (from `training/model_metadata.json` → `uiRanges`):
 | State | Lagos |
 | Property Type | Detached Duplex |
 
-**Expected output:** Random Forest ≈ **₦101,000,000**, likely range
-**₦97,600,000 – ₦104,400,000**. Gradient Boosting ≈ **₦116,700,000**. This
-is the most "typical" profile in the dataset (median bedroom/bathroom
-counts, most common property type, largest state by listing volume) —
-the two models should land reasonably close together here.
+**Expected output:** Random Forest ≈ **₦108,700,000**, likely range
+**₦104,400,000 – ₦113,000,000**. Gradient Boosting ≈ **₦116,700,000**.
 
 ## Case 2 — Large duplex, Abuja
 
@@ -47,11 +44,8 @@ the two models should land reasonably close together here.
 | State | Abuja |
 | Property Type | Detached Duplex |
 
-**Expected output:** Random Forest ≈ **₦319,000,000**, likely range
-**₦187,000,000 – ₦451,000,000** (wide — few 6-bedroom listings in the
-training data means less agreement across the ensemble's individual
-trees, which the confidence range correctly surfaces). Gradient Boosting
-≈ **₦417,000,000**.
+**Expected output:** Random Forest ≈ **₦454,800,000**, likely range
+**₦419,300,000 – ₦490,300,000**. Gradient Boosting ≈ **₦416,500,000**.
 
 ## Case 3 — Modest bungalow, Ogun State (edge case, worth discussing in a defense)
 
@@ -64,17 +58,37 @@ trees, which the confidence range correctly surfaces). Gradient Boosting
 | State | Ogun |
 | Property Type | Detached Bungalow |
 
-**Expected output:** Random Forest ≈ **₦14,900,000**. Gradient Boosting ≈
-**₦3,600,000** — a large disagreement between the two models. This isn't
-a bug: 3-bedroom detached bungalows in Ogun State are a thin slice of
-the training data, so Gradient Boosting's sequential, sharply-cutting
-trees extrapolate poorly here while Random Forest's averaging smooths it
-out. **This is genuinely useful methodology material** — it's a concrete,
-honest demonstration of why comparing two model families (rather than
-shipping one black-box number) has value, and why the confidence range
-matters more on some inputs than others.
+**Expected output:** Random Forest ≈ **₦17,400,000**. Gradient Boosting ≈
+**₦3,600,000** — a large disagreement between the two models. 3-bedroom
+detached bungalows in Ogun State are a thin slice of the training data,
+so Gradient Boosting's sequential, sharply-cutting trees extrapolate
+poorly here while Random Forest's constrained, averaging structure holds
+up better. Good, honest methodology material for a defense — it's a
+concrete demonstration of why comparing two model families matters, and
+why the confidence range is wider on some inputs than others.
 
 ---
+
+## Monotonicity — verified, not assumed
+
+Random Forest is trained with a monotonic constraint: predicted price
+can never decrease as Bedrooms, Bathrooms, Toilets, or Parking Spaces
+increase, holding everything else fixed. This matters because on a real,
+somewhat sparse dataset (~24k rows across 6 features), unconstrained
+trees can otherwise extrapolate in counter-intuitive directions for rare
+combinations (e.g. a model naively trained without this constraint
+priced a 2-bedroom Lagos duplex *lower* than a comparable 1-bedroom one,
+because that exact combination was thin in the training data) — which
+reads as "broken" in a live product even though it's technically
+consistent with the data. The constraint costs a small amount of raw
+fit (R² 0.276 → 0.237) in exchange for predictions that always move the
+direction a user expects. This trade-off, and the specific example that
+motivated it, is worth mentioning in a defense — it shows a real
+debugging/design decision, not just default parameters.
+
+Verify it yourself: drag any of the four numeric sliders on `/valuate`
+from min to max, holding everything else fixed — the estimate should
+never go down.
 
 ## Edge cases worth testing manually
 

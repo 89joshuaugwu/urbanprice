@@ -38,7 +38,7 @@
       "PropertyType_Terraced Bungalow": 0.0,
       "PropertyType_Terraced Duplexes": 0.0
     },
-    "rfPrediction": 198533438.0668838,
+    "rfPrediction": 124859202.9946552,
     "gbPrediction": 108944376.67518471,
     "actualSalePrice": 7000000.0
   },
@@ -81,7 +81,7 @@
       "PropertyType_Terraced Bungalow": 0.0,
       "PropertyType_Terraced Duplexes": 0.0
     },
-    "rfPrediction": 88065159.11625029,
+    "rfPrediction": 56893721.65708072,
     "gbPrediction": 71677473.87494788,
     "actualSalePrice": 100000000.0
   },
@@ -124,7 +124,7 @@
       "PropertyType_Terraced Bungalow": 0.0,
       "PropertyType_Terraced Duplexes": 0.0
     },
-    "rfPrediction": 89187897.69533789,
+    "rfPrediction": 78760093.90404662,
     "gbPrediction": 81765697.0811373,
     "actualSalePrice": 65000000.0
   },
@@ -167,7 +167,7 @@
       "PropertyType_Terraced Bungalow": 0.0,
       "PropertyType_Terraced Duplexes": 0.0
     },
-    "rfPrediction": 226376862.84291843,
+    "rfPrediction": 229050441.39573184,
     "gbPrediction": 219810429.70899928,
     "actualSalePrice": 280000000.0
   },
@@ -210,7 +210,7 @@
       "PropertyType_Terraced Bungalow": 0.0,
       "PropertyType_Terraced Duplexes": 0.0
     },
-    "rfPrediction": 251378616.59717476,
+    "rfPrediction": 184851033.2793057,
     "gbPrediction": 225435502.07748654,
     "actualSalePrice": 170000000.0
   }

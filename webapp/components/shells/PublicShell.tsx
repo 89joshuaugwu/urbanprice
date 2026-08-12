@@ -24,10 +24,15 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     return unsub;
   }, []);
 
-  // Close the mobile menu automatically whenever the route changes.
-  useEffect(() => {
+  // React-recommended "reset state when a prop changes" pattern — done
+  // during render via a tracked previous value, not in a useEffect (an
+  // effect here would trigger a synchronous cascading re-render, which
+  // is exactly the anti-pattern React's own docs warn against).
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setMenuOpen(false);
-  }, [pathname]);
+  }
 
   const linkClass =
     "block rounded-lg px-3 py-3 text-sm font-medium text-up-text-primary hover:bg-slate-100 md:py-2";

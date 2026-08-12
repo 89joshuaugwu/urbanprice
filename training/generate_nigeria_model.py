@@ -70,7 +70,22 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # (much less signal than Ames' dozens of columns), so deeper/more trees
 # mainly overfit rather than help — and a smaller model JSON matters for
 # a mobile-first product on Nigerian mobile data connections.
-rf = RandomForestRegressor(n_estimators=50, max_depth=8, min_samples_leaf=5, random_state=42)
+rf = RandomForestRegressor(
+    n_estimators=50,
+    max_depth=8,
+    min_samples_leaf=5,
+    random_state=42,
+    # Monotonic constraint: predicted price must never decrease as
+    # Bedrooms/Bathrooms/Toilets/ParkingSpace increase, no matter how
+    # sparse a particular combination is in the training data. Without
+    # this, rare combinations (e.g. many bedrooms but few bathrooms)
+    # can make the model extrapolate in counter-intuitive directions —
+    # technically "correct" given the data, but confusing in a live
+    # product where users expect "more rooms => never cheaper." State
+    # and PropertyType one-hot columns get no constraint (0) — there's
+    # no meaningful ordering to constrain there.
+    monotonic_cst=[1 if c in numeric_cols else 0 for c in X.columns],
+)
 rf.fit(X_train, y_train)
 
 gb = GradientBoostingRegressor(n_estimators=80, max_depth=3, learning_rate=0.08, random_state=42)

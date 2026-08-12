@@ -36,6 +36,32 @@ log-price estimates — the untransformed target was kept. This trade-off
 is worth mentioning in a methodology writeup: it's a real modeling
 decision with a documented reason, not an arbitrary default.
 
+### Why Random Forest has a monotonic constraint
+
+On a ~24k-row dataset with only 6 source features, some feature
+combinations are thin (e.g. a 4-bedroom home with only 1 bathroom).
+Without constraints, Random Forest can extrapolate in counter-intuitive
+directions for those rare combinations — e.g. an earlier unconstrained
+version of this model priced a 2-bedroom Lagos duplex *lower* than an
+otherwise-identical 1-bedroom one, purely because that exact combination
+was sparse in training data. Technically consistent with the data, but
+it reads as broken in a live product where users expect "more rooms
+never means cheaper."
+
+`RandomForestRegressor(monotonic_cst=[...])` (scikit-learn ≥1.4) fixes
+this: it constrains Bedrooms/Bathrooms/Toilets/ParkingSpace to be
+non-decreasing with predicted price, with no constraint on the State/
+PropertyType one-hot columns (there's no meaningful ordering to enforce
+there). Cost: raw-scale R² drops slightly (0.276 → 0.237) — an honest,
+documented trade-off in exchange for predictions that always move the
+direction a user expects. Gradient Boosting does NOT have this
+constraint (`GradientBoostingRegressor` doesn't support `monotonic_cst`
+in this scikit-learn version — only `HistGradientBoostingRegressor`
+does, which is architecturally different and wasn't used here), which is
+part of why Random Forest is the model actually shown to users on
+`/valuate` — Gradient Boosting is only used for the side-by-side
+comparison on `/methodology`.
+
 ### Why 50/80 trees at shallower depth, not 100 at depth 10
 
 This dataset has only 6 source features (4 numeric + 2 categorical) —
