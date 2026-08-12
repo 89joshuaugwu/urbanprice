@@ -40,6 +40,8 @@ export interface ModelMetadata {
   uiRanges: Record<string, { min: number; max: number }>;
   neighborhoods: string[]; // Nigerian States — kept as "neighborhoods" for schema stability
   propertyTypes: string[];
+  towns: string[]; // flat list of all towns (fallback only — the UI uses townsByState)
+  townsByState: Record<string, string[]>; // cascading Town options, grouped by State
   currency: string; // e.g. "NGN"
   targetTransform: "identity" | "log1p";
   featureNames: string[];

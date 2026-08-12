@@ -41,9 +41,20 @@ df = df.rename(columns={
     "state": "State",
     "price": "SalePrice",
 })
-df = df.drop(columns=["town"])  # 189 distinct towns is too sparse to be useful; State is the location signal
 df = df.reset_index(drop=True)
 print(f"Cleaned dataset: {len(df)} rows (dropped {24326 - len(df)} outlier/error rows)")
+
+# Keep every town/city — no bucketing. The UI groups them by State so a
+# 189-option flat dropdown never appears; users pick State first, then a
+# short state-specific Town list. 31 town names appear under more than
+# one State in the raw data (e.g. "Ikeja" listed under both Lagos and
+# another state) — that's kept as-is; it reflects the real (State, Town)
+# pairs present in the source data rather than being collapsed away.
+df = df.rename(columns={"town": "Town"})
+df["Town"] = df["Town"].str.strip()
+df = df.reset_index(drop=True)
+print(f"Cleaned dataset: {len(df)} rows (dropped {24326 - len(df)} outlier/error rows)")
+print(f"Towns kept: {df['Town'].nunique()} across {df['State'].nunique()} states")
 
 df.to_csv("nigeria_houses_cleaned.csv", index=False)
 
@@ -53,7 +64,8 @@ df.to_csv("nigeria_houses_cleaned.csv", index=False)
 numeric_cols = ["Bedrooms", "Bathrooms", "Toilets", "ParkingSpace"]
 state_dummies = pd.get_dummies(df["State"], prefix="State")
 type_dummies = pd.get_dummies(df["PropertyType"], prefix="PropertyType")
-X = pd.concat([df[numeric_cols], state_dummies, type_dummies], axis=1).astype(float)
+town_dummies = pd.get_dummies(df["Town"], prefix="Town")
+X = pd.concat([df[numeric_cols], state_dummies, type_dummies, town_dummies], axis=1).astype(float)
 y = df["SalePrice"].astype(float)
 # NOTE: a log1p(price) target transform was tested (standard practice for
 # skewed monetary targets) — it improved log-space R² (~0.52) but made
@@ -111,11 +123,13 @@ for feat, val in importances.items():
         key = "State"
     elif feat.startswith("PropertyType_"):
         key = "PropertyType"
+    elif feat.startswith("Town_"):
+        key = "Town"
     else:
         key = feat
     imp_collapsed[key] = imp_collapsed.get(key, 0) + val
 imp_collapsed = pd.Series(imp_collapsed).sort_values(ascending=False)
-top_features = list(imp_collapsed.index)  # all 6 source features are exposed on the form — there's nothing left to hide behind medians
+top_features = list(imp_collapsed.index)  # all 7 source features are exposed on the form — there's nothing left to hide behind medians
 print("\nTop UI features (collapsed):", top_features)
 
 # ---- Export trees to JSON (same schema as before) ----
@@ -152,11 +166,17 @@ medians = {c: float(X[c].median()) for c in feature_names}
 ui_ranges = {c: {"min": float(df[c].min()), "max": float(df[c].max())} for c in numeric_cols}
 states_list = sorted(df["State"].unique().tolist())
 property_types_list = sorted(df["PropertyType"].unique().tolist())
+towns_list = sorted(df["Town"].unique().tolist())  # all towns, flat (fallback use only)
+towns_by_state = (
+    df.groupby("State")["Town"]
+    .apply(lambda s: sorted(s.unique().tolist()))
+    .to_dict()
+)
 
 with open("model_metadata.json", "w") as f:
     json.dump({
         "trainedAt": "2026-08-11",
-        "datasetSource": "REAL: Nigeria Houses and Prices Dataset (scraped property listings, 25 states) — github.com/temiobasa/Exploratory-Data-Analysis-for-Residential-Real-Estate-Prices-in-Nigeria, originally from Kaggle (Abdullahi Yunus). NOTE: these are listing/asking prices, not verified completed sales — disclose this distinction if asked.",
+        "datasetSource": "REAL: Nigeria Houses and Prices Dataset (scraped property listings, 25 states, 30 named towns/cities + Other) — github.com/temiobasa/Exploratory-Data-Analysis-for-Residential-Real-Estate-Prices-in-Nigeria, originally from Kaggle (Abdullahi Yunus). NOTE: these are listing/asking prices, not verified completed sales — disclose this distinction if asked.",
         "sampleCount": int(len(df)),
         "trainTestSplit": {"train": int(len(X_train)), "test": int(len(X_test))},
         "metrics": metrics,
@@ -166,10 +186,12 @@ with open("model_metadata.json", "w") as f:
         "uiRanges": ui_ranges,
         "neighborhoods": states_list,        # kept as "neighborhoods" for schema compatibility with the web app; represents Nigerian States here
         "propertyTypes": property_types_list,
+        "towns": towns_list,
+        "townsByState": towns_by_state,
         "currency": "NGN",
         "targetTransform": "identity",
         "featureNames": feature_names,
-        "categoricalFeatures": {"State": "State", "PropertyType": "PropertyType"},
+        "categoricalFeatures": {"State": "State", "PropertyType": "PropertyType", "Town": "Town"},
     }, f, indent=2)
 
 print("\nWrote random_forest.json, gradient_boosting.json, model_metadata.json")
@@ -196,6 +218,7 @@ for i, r in sample.iterrows():
     comp_rows.append({
         "id": f"comp-{i}",
         "neighborhood": r["State"],
+        "town": r["Town"],
         "propertyType": r["PropertyType"],
         "bedrooms": int(r["Bedrooms"]),
         "bathrooms": int(r["Bathrooms"]),

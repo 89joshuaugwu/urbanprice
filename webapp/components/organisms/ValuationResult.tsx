@@ -27,8 +27,9 @@ export function ValuationResult({ result, loggedIn, onReset }: ValuationResultPr
     const bedrooms = Number(result.inputFeatures["Bedrooms"]) || 4;
     const bathrooms = Number(result.inputFeatures["Bathrooms"]) || 4;
     const state = String(result.inputFeatures["State"] ?? "");
+    const town = String(result.inputFeatures["Town"] ?? "");
     const propertyType = String(result.inputFeatures["PropertyType"] ?? "");
-    findComparables({ bedrooms, bathrooms, state, propertyType }).then(setComparables);
+    findComparables({ bedrooms, bathrooms, state, town, propertyType }).then(setComparables);
   }, [result.inputFeatures]);
 
   return (

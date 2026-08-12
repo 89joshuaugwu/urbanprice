@@ -23,6 +23,7 @@ export interface ValuationResultData {
 export interface ComparableProperty {
   id: string;
   neighborhood: string; // Nigerian State
+  town: string;
   propertyType: string;
   bedrooms: number;
   bathrooms: number;

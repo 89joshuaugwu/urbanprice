@@ -8,8 +8,9 @@ web app as static assets.
 ## Current model: real Nigerian property data
 
 `generate_nigeria_model.py` trains on **24,195 real Nigerian property
-listings** across 25 states (bedrooms, bathrooms, toilets, parking
-spaces, property type, state, price in Naira), downloaded from:
+listings** across 25 states and 186 towns/cities (bedrooms, bathrooms,
+toilets, parking spaces, property type, town, state, price in Naira),
+downloaded from:
 
 https://github.com/temiobasa/Exploratory-Data-Analysis-for-Residential-Real-Estate-Prices-in-Nigeria
 
@@ -35,6 +36,19 @@ product's actual job is giving users accurate raw-Naira estimates — not
 log-price estimates — the untransformed target was kept. This trade-off
 is worth mentioning in a methodology writeup: it's a real modeling
 decision with a documented reason, not an arbitrary default.
+
+### Why Town matters (and why it's the biggest lever in this model)
+
+An earlier version of this model dropped the `town` column entirely
+(too many distinct values felt too sparse to be useful) and only used
+`State` for location. That was a real product gap: with only State-level
+resolution, the app couldn't tell the difference between Lekki and Ikoyi
+— two areas in the *same* Lagos state whose real prices differ by 5x+.
+Town is now kept in full (186 towns, not bucketed) and is by a wide
+margin the single most important feature in the model — adding it back
+raised Random Forest's R² from 0.237 to **0.671**. The UI groups towns by
+State in a cascading dropdown (pick State, then a state-specific Town
+list) so the form never shows a single flat list of 186 options.
 
 ### Why Random Forest has a monotonic constraint
 

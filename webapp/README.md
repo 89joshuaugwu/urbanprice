@@ -88,15 +88,17 @@ webapp/
   .env.example
 ```
 
-## 4. The six inputs the model uses
+## 4. The seven inputs the model uses
 
 `Bedrooms`, `Bathrooms`, `Toilets`, `ParkingSpace` (all numeric sliders),
-`State` (25 Nigerian states, dropdown), `PropertyType` (Detached Duplex,
-Terraced Duplexes, Semi Detached Duplex, Detached Bungalow, Block of
-Flats, Semi Detached Bungalow, Terraced Bungalow — dropdown). All six are
-exposed directly on the `/valuate` form — nothing is hidden behind a
-median fill-in, because the source dataset doesn't have any features
-beyond these six.
+`State` (25 Nigerian states, dropdown), `Town` (cascading — scoped to
+whichever State is currently selected; e.g. 47 towns under Lagos, 53
+under Abuja), `PropertyType` (Detached Duplex, Terraced Duplexes, Semi
+Detached Duplex, Detached Bungalow, Block of Flats, Semi Detached
+Bungalow, Terraced Bungalow — dropdown). Town is by far the single most
+important feature in the model (raised R² from 0.24 to 0.67 when added)
+— it's the difference between, say, Lekki and Ikoyi, two areas within
+the same Lagos state whose real prices differ by 5x+.
 
 ## 5. Verifying the inference engine is correct
 

@@ -15,17 +15,17 @@ async function loadComparables(): Promise<ComparableProperty[]> {
 
 function normalizedDistance(
   a: ComparableProperty,
-  target: { bedrooms: number; bathrooms: number; state: string; propertyType: string }
+  target: { bedrooms: number; bathrooms: number; state: string; town: string; propertyType: string }
 ): number {
   const bedDiff = (a.bedrooms - target.bedrooms) / 9;
   const bathDiff = (a.bathrooms - target.bathrooms) / 9;
-  const stateMatch = a.neighborhood === target.state ? 0 : 0.3;
+  const townMatch = a.town === target.town ? 0 : a.neighborhood === target.state ? 0.15 : 0.3;
   const typeMatch = a.propertyType === target.propertyType ? 0 : 0.15;
-  return Math.sqrt(bedDiff ** 2 + bathDiff ** 2) + stateMatch + typeMatch;
+  return Math.sqrt(bedDiff ** 2 + bathDiff ** 2) + townMatch + typeMatch;
 }
 
 export async function findComparables(
-  target: { bedrooms: number; bathrooms: number; state: string; propertyType: string },
+  target: { bedrooms: number; bathrooms: number; state: string; town: string; propertyType: string },
   count = 4
 ): Promise<ComparableProperty[]> {
   const all = await loadComparables();

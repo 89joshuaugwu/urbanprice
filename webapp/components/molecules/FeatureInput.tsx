@@ -10,10 +10,11 @@ interface FeatureInputProps {
   name: string;
   value: number | string;
   metadata: ModelMetadata;
+  selectedState?: string; // needed so the Town field can show only that state's towns
   onChange: (name: string, value: number | string) => void;
 }
 
-export function FeatureInput({ name, value, metadata, onChange }: FeatureInputProps) {
+export function FeatureInput({ name, value, metadata, selectedState, onChange }: FeatureInputProps) {
   const meta = FEATURE_LABELS[name] ?? { label: name, help: "" };
 
   if (name === "State") {
@@ -25,6 +26,25 @@ export function FeatureInput({ name, value, metadata, onChange }: FeatureInputPr
           value={String(value)}
           onChange={(e) => onChange(name, e.target.value)}
           options={metadata.neighborhoods.map((n) => ({ value: n, label: n }))}
+        />
+        <p className="mt-1 text-xs text-up-text-secondary">{meta.help}</p>
+      </div>
+    );
+  }
+
+  if (name === "Town") {
+    // Cascading: town options are scoped to whichever State is currently
+    // selected, so the dropdown is always a short, relevant list (up to
+    // ~50 towns for Lagos/Abuja) instead of a single flat list of 186.
+    const townOptions = (selectedState && metadata.townsByState[selectedState]) || metadata.towns;
+    return (
+      <div>
+        <Select
+          id={`feature-${name}`}
+          label={meta.label}
+          value={String(value)}
+          onChange={(e) => onChange(name, e.target.value)}
+          options={townOptions.map((n) => ({ value: n, label: n }))}
         />
         <p className="mt-1 text-xs text-up-text-secondary">{meta.help}</p>
       </div>

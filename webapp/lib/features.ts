@@ -50,6 +50,10 @@ export const FEATURE_LABELS: Record<
     label: "State",
     help: "Nigerian state the property is located in.",
   },
+  Town: {
+    label: "Town / Area",
+    help: "Specific town or area — the most common ones are listed by name; less common areas are grouped as \"Other\".",
+  },
   PropertyType: {
     label: "Property Type",
     help: "The building type — duplex, bungalow, flat, etc.",

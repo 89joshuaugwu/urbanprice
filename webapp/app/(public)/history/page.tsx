@@ -66,7 +66,7 @@ export default function HistoryPage() {
                   {new Date(h.createdAt).toLocaleDateString()}
                 </p>
                 <p className="text-sm text-up-text-primary">
-                  {h.inputFeatures["State"]} · {h.inputFeatures["Bedrooms"]} bed
+                  {h.inputFeatures["Town"] ?? h.inputFeatures["State"]} · {h.inputFeatures["Bedrooms"]} bed
                 </p>
               </div>
               <p className="font-data font-semibold text-up-accent">
